@@ -1,0 +1,105 @@
+{% extends 'examportal/base.html' %}
+
+{% block content %}
+<section class="answer-keys-page" style="padding: 80px 0; background: #f8f9fa; min-height: 100vh;">
+    <div class="container">
+        <div class="page-header" style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: #2c3e50; margin-bottom: 15px;">Answer Keys</h1>
+            <p style="color: #666; max-width: 600px; margin: 0 auto;">Download official answer keys for various government examinations</p>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="category-filters" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">Filter by Category</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="{% url 'answer_keys' %}" 
+                   style="padding: 8px 16px; background: {% if not selected_category %}#3498db{% else %}#ecf0f1{% endif %}; 
+                          color: {% if not selected_category %}white{% else %}#2c3e50{% endif %}; 
+                          text-decoration: none; border-radius: 20px; font-size: 14px; transition: all 0.3s;">
+                    All Exams
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'answer_keys' %}?category={{ category.slug }}" 
+                   style="padding: 8px 16px; background: {% if selected_category == category.slug %}#3498db{% else %}#ecf0f1{% endif %}; 
+                          color: {% if selected_category == category.slug %}white{% else %}#2c3e50{% endif %}; 
+                          text-decoration: none; border-radius: 20px; font-size: 14px; transition: all 0.3s;">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Answer Keys List -->
+        <div class="answer-keys-container">
+            {% if answer_keys %}
+                <div class="answer-keys-list">
+                    {% for answer_key in answer_keys %}
+                    <div class="answer-key-card" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 25px;">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; flex-wrap: wrap;">
+                                    <span style="background: #ecf0f1; color: #2c3e50; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;">
+                                        {{ answer_key.exam.exam_category.name }}
+                                    </span>
+                                    <span style="background: 
+                                        {% if answer_key.exam_type == 'prelims' %}#3498db
+                                        {% elif answer_key.exam_type == 'mains' %}#9b59b6
+                                        {% else %}#e74c3c{% endif %}; 
+                                        color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;">
+                                        {{ answer_key.get_exam_type_display }}
+                                    </span>
+                                    <span style="color: #666; font-size: 14px;">
+                                        <i class="far fa-calendar-alt"></i> {{ answer_key.release_date|date:"M d, Y" }}
+                                    </span>
+                                </div>
+                                
+                                <h3 style="color: #2c3e50; margin-bottom: 10px; font-size: 20px;">{{ answer_key.title }}</h3>
+                                <p style="color: #666; margin-bottom: 15px; font-size: 14px;">{{ answer_key.exam.title }}</p>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center;">
+                            {% if answer_key.get_download_url %}
+                            <a href="{{ answer_key.get_download_url }}" target="_blank" 
+                               style="background: #f39c12; color: white; padding: 10px 25px; border-radius: 5px; 
+                                      text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;">
+                                <i class="fas fa-download"></i> Download Answer Key
+                            </a>
+                            {% else %}
+                            <button style="background: #95a5a6; color: white; padding: 10px 25px; border-radius: 5px; 
+                                         border: none; font-weight: 600; cursor: not-allowed; display: inline-flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-download"></i> Download Not Available
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 48px; color: #bdc3c7; margin-bottom: 20px;">🔑</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 10px;">No Answer Keys Available</h3>
+                    <p style="color: #666; margin-bottom: 20px;">There are no answer keys available for download at the moment.</p>
+                    <a href="{% url 'home' %}" style="background: #3498db; color: white; padding: 10px 25px; 
+                                                     border-radius: 5px; text-decoration: none; font-weight: 600;">
+                        Return to Home
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Important Information -->
+        <div class="important-info" style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin-top: 40px;">
+            <h4 style="color: #856404; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-lightbulb"></i> How to Use Answer Keys
+            </h4>
+            <p style="color: #856404; margin: 0; font-size: 14px;">
+                • Download the answer key after your exam to check your answers<br>
+                • Compare your responses with the official answer key<br>
+                • Calculate your expected score and predict your result<br>
+                • Raise objections if you find any discrepancies (within the specified timeframe)
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

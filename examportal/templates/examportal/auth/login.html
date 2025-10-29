@@ -1,0 +1,46 @@
+{% extends 'examportal/base.html' %}
+
+{% block content %}
+<section class="auth-section" style="padding: 80px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container">
+        <div class="auth-container" style="max-width: 450px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);">
+            <div class="auth-header" style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: #2c3e50; margin-bottom: 10px;">Welcome Back</h2>
+                <p style="color: #666;">Sign in to continue your preparation</p>
+            </div>
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-danger" style="background: #fee; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    Invalid username or password. Please try again.
+                </div>
+                {% endif %}
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Username or Email</label>
+                    {{ form.username }}
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Password</label>
+                    {{ form.password }}
+                </div>
+
+                <button type="submit" class="auth-btn" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #3498db, #2c3e50); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="auth-footer" style="text-align: center; margin-top: 25px;">
+                <p style="color: #666; margin-bottom: 15px;">
+                    Don't have an account? 
+                    <a href="{% url 'register' %}" style="color: #3498db; text-decoration: none; font-weight: 600;">Create Account</a>
+                </p>
+                <a href="#" style="color: #666; text-decoration: none;">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

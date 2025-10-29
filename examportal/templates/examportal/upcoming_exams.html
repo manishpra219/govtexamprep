@@ -1,0 +1,95 @@
+{% extends 'examportal/base.html' %}
+
+{% block content %}
+<section class="upcoming-exams-page" style="padding: 80px 0; background: #f8f9fa; min-height: 100vh;">
+    <div class="container">
+        <div class="page-header" style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: #2c3e50; margin-bottom: 15px;">Upcoming Government Exams</h1>
+            <p style="color: #666; max-width: 600px; margin: 0 auto;">Stay updated with all upcoming government examinations and their important dates</p>
+        </div>
+
+        <!-- Exams List -->
+        <div class="exams-container">
+            {% if upcoming_exams %}
+                <div class="exam-list">
+                    {% for exam in upcoming_exams %}
+                    <div class="exam-card" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                            <div>
+                                <h3 style="color: #2c3e50; margin-bottom: 8px;">{{ exam.title }}</h3>
+                                <p style="color: #666; margin-bottom: 10px;">{{ exam.description }}</p>
+                                <span style="background: #ecf0f1; color: #2c3e50; padding: 4px 12px; border-radius: 15px; font-size: 14px;">
+                                    {{ exam.exam_category.name }}
+                                </span>
+                            </div>
+                            {% if exam.is_open_for_application %}
+                            <span style="background: #2ecc71; color: white; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;">
+                                Open for Application
+                            </span>
+                            {% else %}
+                            <span style="background: #e74c3c; color: white; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;">
+                                Application Closed
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                            <div style="text-align: center;">
+                                <div style="color: #3498db; font-weight: 600; margin-bottom: 5px;">Application Starts</div>
+                                <div style="color: #2c3e50; font-size: 14px;">
+                                    <i class="far fa-calendar-alt"></i> {{ exam.application_start|date:"M d, Y" }}
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="color: #e74c3c; font-weight: 600; margin-bottom: 5px;">Application Ends</div>
+                                <div style="color: #2c3e50; font-size: 14px;">
+                                    <i class="far fa-calendar-alt"></i> {{ exam.application_end|date:"M d, Y" }}
+                                </div>
+                            </div>
+                            <!-- <div style="text-align: center;">
+                                <div style="color: #9b59b6; font-weight: 600; margin-bottom: 5px;">Exam Date</div>
+                                <div style="color: #2c3e50; font-size: 14px;">
+                                    <i class="far fa-calendar-check"></i> {{ exam.exam_date|date:"M d, Y" }}
+                                </div>
+                            </div> -->
+                            <!-- REPLACE the exam date section with this: -->
+<div style="text-align: center;">
+    <div style="color: #9b59b6; font-weight: 600; margin-bottom: 5px;">Exam Date</div>
+    <div style="color: #2c3e50; font-size: 14px;">
+        <i class="far fa-calendar-check"></i> 
+        {{ exam.get_exam_date_display }}
+    </div>
+</div>
+                        </div>
+
+                        <div style="margin-top: 20px; text-align: center;">
+                            {% if exam.is_open_for_application and exam.apply_link %}
+                            <a href="{{ exam.apply_link }}" target="_blank" 
+                               style="background: #3498db; color: white; padding: 10px 25px; border-radius: 5px; 
+                                      text-decoration: none; font-weight: 600; display: inline-block; margin-right: 10px;">
+                                Apply Now
+                            </a>
+                            {% endif %}
+                            <button style="background: #95a5a6; color: white; padding: 10px 25px; border-radius: 5px; 
+                                         border: none; font-weight: 600; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 48px; color: #bdc3c7; margin-bottom: 20px;">📅</div>
+                    <h3 style="color: #2c3e50; margin-bottom: 10px;">No Upcoming Exams</h3>
+                    <p style="color: #666; margin-bottom: 20px;">There are no upcoming exams at the moment. Please check back later.</p>
+                    <a href="{% url 'home' %}" style="background: #3498db; color: white; padding: 10px 25px; 
+                                                     border-radius: 5px; text-decoration: none; font-weight: 600;">
+                        Return to Home
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

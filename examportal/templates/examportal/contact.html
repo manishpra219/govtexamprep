@@ -1,0 +1,198 @@
+{% extends 'examportal/base.html' %}
+
+{% block title %}Contact Us - GovtExamPrep{% endblock %}
+
+{% block content %}
+<section class="contact-section" style="padding: 80px 0; background: #f8f9fa; min-height: 100vh;">
+    <div class="container">
+        <div class="contact-header" style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: #2c3e50; margin-bottom: 15px;">Contact Us</h1>
+            <p style="color: #666; max-width: 600px; margin: 0 auto;">Get in touch with us for any queries, suggestions, or support</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+            <!-- Contact Form -->
+            <div class="contact-form-card" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #2c3e50; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-envelope"></i> Send us a Message
+                </h3>
+                
+                {% if messages %}
+                <div style="margin-bottom: 20px;">
+                    {% for message in messages %}
+                    <div style="background: {% if message.tags == 'success' %}#d4edda{% else %}#f8d7da{% endif %}; 
+                                color: {% if message.tags == 'success' %}#155724{% else %}#721c24{% endif %}; 
+                                padding: 12px; border-radius: 5px; border: 1px solid {% if message.tags == 'success' %}#c3e6cb{% else %}#f5c6cb{% endif %};">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">Your Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div style="color: #e74c3c; font-size: 14px; margin-top: 5px;">
+                            {{ form.name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">Email Address *</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div style="color: #e74c3c; font-size: 14px; margin-top: 5px;">
+                            {{ form.email.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">Subject *</label>
+                        {{ form.subject }}
+                        {% if form.subject.errors %}
+                        <div style="color: #e74c3c; font-size: 14px; margin-top: 5px;">
+                            {{ form.subject.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">Message *</label>
+                        {{ form.message }}
+                        {% if form.message.errors %}
+                        <div style="color: #e74c3c; font-size: 14px; margin-top: 5px;">
+                            {{ form.message.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="submit-btn" 
+                            style="background: linear-gradient(135deg, #3498db, #2c3e50); color: white; border: none; padding: 12px 30px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; font-size: 16px; transition: all 0.3s;">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="contact-info-card" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #2c3e50; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-info-circle"></i> Get in Touch
+                </h3>
+
+                <div class="contact-methods" style="display: grid; gap: 20px;">
+                    <div class="contact-item" style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div class="contact-icon" style="width: 50px; height: 50px; background: rgba(52, 152, 219, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-envelope" style="color: #3498db; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: #2c3e50; margin-bottom: 5px;">Email Us</h4>
+                            <p style="color: #666; margin: 0;">infogovtexamprep@gmail.com</p>
+                            <small style="color: #7f8c8d;">We'll respond within 24 hours</small>
+                        </div>
+                    </div>
+
+                    <div class="contact-item" style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div class="contact-icon" style="width: 50px; height: 50px; background: rgba(46, 204, 113, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-clock" style="color: #2ecc71; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: #2c3e50; margin-bottom: 5px;">Support Hours</h4>
+                            <p style="color: #666; margin: 0;">24/7 Online Support</p>
+                            <small style="color: #7f8c8d;">Email support available anytime</small>
+                        </div>
+                    </div>
+
+                    <div class="contact-item" style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div class="contact-icon" style="width: 50px; height: 50px; background: rgba(155, 89, 182, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-globe" style="color: #9b59b6; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: #2c3e50; margin-bottom: 5px;">Website</h4>
+                            <!-- <p style="color: #666; margin: 0;">www.govtexamprep.com</p> -->
+                            <small style="color: #7f8c8d;">Visit our platform</small>
+                        </div>
+                    </div>
+
+                    <div class="contact-item" style="display: flex; align-items: flex-start; gap: 15px;">
+                        <div class="contact-icon" style="width: 50px; height: 50px; background: rgba(243, 156, 18, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-map-marker-alt" style="color: #f39c12; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: #2c3e50; margin-bottom: 5px;">Location</h4>
+                            <p style="color: #666; margin: 0;">Based in India</p>
+                            <small style="color: #7f8c8d;">Serving aspirants nationwide</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Section -->
+                <div class="faq-section" style="margin-top: 30px; padding-top: 25px; border-top: 1px solid #eee;">
+                    <h4 style="color: #2c3e50; margin-bottom: 15px;">Quick Help</h4>
+                    <div style="color: #666; font-size: 14px; line-height: 1.6;">
+                        <p><strong>Common Questions:</strong></p>
+                        <ul style="padding-left: 20px; margin-top: 10px;">
+                            <li>How to download study materials?</li>
+                            <li>Exam notification not working?</li>
+                            <li>Account access issues?</li>
+                            <li>Payment and subscription queries</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s;
+    background: #f8f9fa;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.contact-item:hover .contact-icon {
+    transform: scale(1.1);
+    transition: transform 0.3s;
+}
+
+@media (max-width: 768px) {
+    .contact-section .container > div {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
+</style>
+{% endblock %}

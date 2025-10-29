@@ -1,0 +1,81 @@
+{% extends 'examportal/base.html' %}
+
+{% block content %}
+<section class="profile-section" style="padding: 80px 0; background: #f8f9fa; min-height: 100vh;">
+    <div class="container">
+        <div class="profile-header" style="text-align: center; margin-bottom: 40px;">
+            <h2 style="color: #2c3e50; margin-bottom: 10px;">My Profile</h2>
+            <p style="color: #666;">Manage your account and preferences</p>
+        </div>
+
+        <div class="profile-content" style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            <!-- Profile Info -->
+            <div class="profile-card" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div class="user-avatar" style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #3498db, #2c3e50); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                        <span style="color: white; font-size: 24px; font-weight: bold;">{{ user.username.0|upper }}</span>
+                    </div>
+                    <h3 style="color: #2c3e50; margin-bottom: 5px;">{{ user.username }}</h3>
+                    <p style="color: #666; font-size: 14px;">Member since {{ user.date_joined|date:"M Y" }}</p>
+                </div>
+
+                <div class="user-stats" style="border-top: 1px solid #eee; padding-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #666;">Email:</span>
+                        <span style="color: #2c3e50; font-weight: 500;">{{ user.email }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #666;">Phone:</span>
+                        <span style="color: #2c3e50; font-weight: 500;">{{ profile.phone }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666;">Exam Interest:</span>
+                        <span style="color: #2c3e50; font-weight: 500;">{{ profile.get_exam_interests_display }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="profile-form-card" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #2c3e50; margin-bottom: 25px;">Edit Profile</h3>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">Phone Number</label>
+                        {{ form.phone }}
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">Exam Interests</label>
+                        {{ form.exam_interests }}
+                    </div>
+
+                    <button type="submit" class="update-btn" style="background: linear-gradient(135deg, #3498db, #2c3e50); color: white; border: none; padding: 12px 30px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        Update Profile
+                    </button>
+                </form>
+
+                <!-- Recent Activities -->
+                <div class="activities-section" style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #eee;">
+                    <h4 style="color: #2c3e50; margin-bottom: 20px;">Recent Activities</h4>
+                    <div class="activities-list">
+                        {% for activity in activities %}
+                        <div class="activity-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+                            <div>
+                                <span style="color: #2c3e50; font-weight: 500;">{{ activity.activity_type|title }}</span>
+                                <p style="color: #666; font-size: 14px; margin: 5px 0 0 0;">{{ activity.description }}</p>
+                            </div>
+                            <span style="color: #999; font-size: 12px;">{{ activity.created_at|timesince }} ago</span>
+                        </div>
+                        {% empty %}
+                        <p style="color: #666; text-align: center; padding: 20px;">No activities yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

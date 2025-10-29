@@ -1,0 +1,236 @@
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>Govt<span>Exam</span>Prep</h1>
+            </div>
+
+            <!-- Header Search Box -->
+            <div class="header-search" style="flex: 1; max-width: 400px; margin: 0 30px;">
+                <form method="get" action="{% url 'search' %}" style="display: flex; width: 100%;">
+                    <input type="text" name="q" value="{{ request.GET.q }}" 
+                           placeholder="Search notes, exams, answer keys..." 
+                           style="flex: 1; padding: 8px 15px; border: 1px solid #ddd; border-radius: 20px 0 0 20px; 
+                                  font-size: 14px; outline: none; background: rgba(255,255,255,0.9);">
+                    <button type="submit" 
+                            style="background: var(--warning); color: white; border: none; padding: 0 20px; 
+                                   border-radius: 0 20px 20px 0; cursor: pointer; font-size: 14px; transition: background 0.3s;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
+                        <i class="fas fa-home"></i> Home
+                    </a></li>
+                    <li><a href="{% url 'notes' %}" class="{% if 'notes' in request.path %}active{% endif %}">
+                        <i class="fas fa-book"></i> Notes
+                    </a></li>
+                    <li><a href="{% url 'upcoming_exams' %}" class="{% if 'upcoming-exams' in request.path %}active{% endif %}">
+                        <i class="fas fa-calendar-alt"></i> Exams
+                    </a></li>
+                    <li><a href="{% url 'announcements' %}" class="{% if 'announcements' in request.path %}active{% endif %}">
+                        <i class="fas fa-bullhorn"></i> News
+                    </a></li>
+                    
+                    <!-- Improved Downloads Dropdown -->
+                    <li class="dropdown" style="position: relative;" id="downloadsDropdown">
+                        <a href="#" class="{% if 'answer-keys' in request.path or 'admit-cards' in request.path or 'results' in request.path %}active{% endif %}"
+                           onclick="toggleDropdown('downloadsDropdown')">
+                            <i class="fas fa-download"></i> Downloads <i class="fas fa-caret-down"></i>
+                        </a>
+                        <div class="dropdown-menu" id="downloadsMenu" 
+                             style="position: absolute; top: 100%; left: 0; background: white; min-width: 200px; 
+                                    border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); padding: 10px 0; 
+                                    margin-top: 10px; display: none; z-index: 1000;">
+                            <a href="{% url 'answer_keys' %}" 
+                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
+                                      transition: background 0.3s; border-bottom: 1px solid #f0f0f0;">
+                                <i class="fas fa-key"></i> Answer Keys
+                            </a>
+                            <a href="{% url 'admit_cards' %}" 
+                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
+                                      transition: background 0.3s; border-bottom: 1px solid #f0f0f0;">
+                                <i class="fas fa-file-pdf"></i> Admit Cards
+                            </a>
+                            <a href="{% url 'results' %}" 
+                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
+                                      transition: background 0.3s;">
+                                <i class="fas fa-trophy"></i> Results
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="auth-buttons">
+                {% if user.is_authenticated %}
+                <div class="user-menu" style="display: flex; align-items: center; gap: 15px;">
+                    <a href="{% url 'dashboard' %}" class="btn" style="background: transparent; border: 2px solid white; color: white; text-decoration: none; padding: 6px 12px;">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    
+                    <!-- Improved User Dropdown -->
+                    <div class="dropdown" style="position: relative;" id="userDropdown">
+                        <button class="btn" style="background: var(--warning); color: white; display: flex; align-items: center; gap: 8px; padding: 6px 12px;"
+                                onclick="toggleDropdown('userDropdown')">
+                            <i class="fas fa-user"></i> {{ user.username }}
+                            <i class="fas fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="userMenu" 
+                             style="position: absolute; top: 100%; right: 0; background: white; min-width: 200px; 
+                                    border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); padding: 10px 0; 
+                                    margin-top: 10px; display: none; z-index: 1000;">
+                            <a href="{% url 'profile' %}" 
+                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
+                                      transition: background 0.3s; border-bottom: 1px solid #f0f0f0;">
+                                <i class="fas fa-user-cog"></i> Profile
+                            </a>
+                            <a href="{% url 'dashboard' %}" 
+                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
+                                      transition: background 0.3s; border-bottom: 1px solid #f0f0f0;">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
+                            <a href="{% url 'logout' %}" 
+                               style="display: block; padding: 10px 20px; color: #e74c3c; text-decoration: none; 
+                                      transition: background 0.3s;">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-register">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+/* Dropdown Styles */
+.dropdown-menu {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-menu a:hover {
+    background: #f8f9fa;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header Search Styles */
+.header-search form button:hover {
+    background: #e67e22 !important;
+}
+
+.header-search input:focus {
+    border-color: var(--warning) !important;
+    background: white !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .header-search {
+        max-width: 300px;
+        margin: 0 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .header-search {
+        order: 3;
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 20px;
+    }
+    
+    .header-search input {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .auth-buttons .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+</style>
+
+<script>
+// Dropdown functionality
+let activeDropdown = null;
+
+function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    const menu = document.getElementById(dropdownId.replace('Dropdown', 'Menu'));
+    
+    // Close any other open dropdown
+    if (activeDropdown && activeDropdown !== menu) {
+        activeDropdown.style.display = 'none';
+    }
+    
+    // Toggle current dropdown
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+        activeDropdown = null;
+    } else {
+        menu.style.display = 'block';
+        activeDropdown = menu;
+    }
+    
+    // Prevent the link from navigating
+    event.preventDefault();
+    return false;
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    if (activeDropdown && !event.target.closest('.dropdown')) {
+        activeDropdown.style.display = 'none';
+        activeDropdown = null;
+    }
+});
+
+// Close dropdown when pressing Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && activeDropdown) {
+        activeDropdown.style.display = 'none';
+        activeDropdown = null;
+    }
+});
+
+// Keep dropdown open when hovering over it
+document.addEventListener('mouseover', function(event) {
+    if (activeDropdown && event.target.closest('.dropdown-menu')) {
+        activeDropdown.style.display = 'block';
+    }
+});
+</script>

@@ -1,0 +1,59 @@
+{% extends 'examportal/base.html' %}
+
+{% block content %}
+<section class="notes-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Study Materials & Notes</h2>
+            <p>Comprehensive notes for all subjects categorized by exam type</p>
+        </div>
+        
+        <div class="notes-tabs">
+            <a href="{% url 'notes' %}" class="tab-btn {% if not selected_category %}active{% endif %}">All</a>
+            {% for category in exam_categories %}
+            <a href="{% url 'notes_by_category' category.slug %}" class="tab-btn {% if selected_category == category %}active{% endif %}">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+        
+        <div class="subject-grid">
+            {% for subject in subjects %}
+            <div class="subject-card">
+                <div class="subject-header">
+                    <h4>{{ subject.name }}</h4>
+                    <small>{{ subject.exam_category.name }}</small>
+                </div>
+                <div class="subject-content">
+                    <ul class="topic-list">
+                        {% for note in subject.note_set.all|slice:":5" %}
+                        <li>
+                            {{ note.title }}
+                            <a href="{% if note.file %}{{ note.file.url }}{% else %}#{% endif %}" 
+                               class="download-btn" 
+                               {% if note.file %}download{% endif %}>
+                                Download
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li>No notes available yet</li>
+                        {% endfor %}
+                    </ul>
+                    {% if subject.note_set.count > 5 %}
+                    <a href="#" class="apply-btn" style="margin-top: 15px; display: inline-block;">
+                        View All Notes
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <!-- Show placeholder if no subjects -->
+            <div class="subject-card" style="text-align: center; padding: 40px;">
+                <h4>No Subjects Available</h4>
+                <p style="color: #666;">Subjects will be added soon. Check back later!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

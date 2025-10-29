@@ -1,0 +1,382 @@
+{% extends 'examportal/base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<!-- Improved Hero Section -->
+ <!-- Improved Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <!-- Trust Badge -->
+        <div class="trust-badge">
+            <span>🏆 Trusted by 50,000+ Aspirants</span>
+        </div>
+
+        <!-- Main Headline -->
+        <h1 class="main-headline">
+            Crack Your <span class="highlight">Dream Government Job</span> with Confidence
+        </h1>
+
+        <!-- Sub-headline -->
+        <p class="sub-headline">
+            Get <strong>free study materials, live classes, mock tests,</strong> and 
+            <strong>personalized guidance</strong> for SSC, Banking, Teaching, 
+            UPSC and 50+ other government exams.
+        </p>
+
+        <!-- Key Benefits Grid -->
+        <div class="benefits-grid">
+            <div class="benefit-item">
+                <span class="icon">📚</span>
+                <span>Latest Study Materials</span>
+            </div>
+            <div class="benefit-item">
+                <span class="icon">🔔</span>
+                <span>Instant Exam Alerts</span>
+            </div>
+            <div class="benefit-item">
+                <span class="icon">📊</span>
+                <span>Detailed Analytics</span>
+            </div>
+            <div class="benefit-item">
+                <span class="icon">💯</span>
+                <span>Expert Faculty</span>
+            </div>
+        </div>
+
+        <!-- Enhanced Search Bar -->
+        <!-- Enhanced Search Bar -->
+<div class="search-container">
+    <div class="search-box-improved">
+        <form method="get" action="{% url 'search' %}" style="display: flex; width: 100%;">
+            <input 
+                type="text" 
+                name="q"
+                placeholder="Search for SSC CGL notes, banking syllabus, previous papers..." 
+                class="search-input"
+                style="flex: 1;"
+            >
+            <button type="submit" class="search-btn">
+                <span class="search-icon">🔍</span>
+                Search
+            </button>
+        </form>
+    </div>
+    <div class="search-tags">
+        <span>Popular: </span>
+        <a href="{% url 'search' %}?q=SSC CHSL">SSC CHSL</a>
+        <a href="{% url 'search' %}?q=IBPS PO">IBPS PO</a>
+        <a href="{% url 'search' %}?q=CTET">CTET</a>
+        <a href="{% url 'search' %}?q=UPSC Prelims">Railway Exam</a>
+    </div>
+</div>
+
+        <!-- Call-to-Action Buttons -->
+        <div class="cta-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="cta-btn btn-primary">
+                    <span class="btn-icon">🚀</span>
+                    Continue Preparation
+                </a>
+            {% else %}
+                <a href="{% url 'register' %}" class="cta-btn btn-primary">
+                    <span class="btn-icon">🚀</span>
+                    Start Free Preparation
+                </a>
+            {% endif %}
+            <a href="#" class="cta-btn btn-secondary">
+                <span class="btn-icon">📱</span>
+                Download App
+            </a>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="social-proof">
+            <div class="stats">
+                <strong>10,000+</strong>
+                <span>Selections</span>
+            </div>
+            <div class="stats">
+                <strong>500+</strong>
+                <span>Expert Faculty</span>
+            </div>
+            <div class="stats">
+                <strong>24/7</strong>
+                <span>Doubt Support</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="section-title">
+            <h2>Why Choose Us?</h2>
+            <p>We provide everything you need to crack government exams in one place</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3>Comprehensive Notes</h3>
+                <p>Well-organized study materials for all subjects and topics of various government exams.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <h3>Quick Preparation Tips</h3>
+                <p>Expert strategies and shortcuts to help you prepare faster and more effectively.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Exam Notifications</h3>
+                <p>Never miss an important update with our timely exam notifications and alerts.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3>Admit Card & Results</h3>
+                <p>Quick access to admit cards and results for all major government examinations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Exam Categories -->
+<section class="exam-categories">
+    <div class="container">
+        <div class="section-title">
+            <h2>Popular Exam Categories</h2>
+            <p>Comprehensive preparation materials for all major government exams</p>
+        </div>
+        <div class="categories-grid">
+            {% for category in exam_categories %}
+            <div class="category-card">
+                <div class="category-header">
+                    <h3>{{ category.name }}</h3>
+                </div>
+                <div class="category-content">
+                    <ul>
+                        {% for subject in category.subject_set.all|slice:":5" %}
+                        <li><i class="fas fa-caret-right"></i> {{ subject.name }}</li>
+                        {% empty %}
+                        <li><i class="fas fa-caret-right"></i> Quantitative Aptitude</li>
+                        <li><i class="fas fa-caret-right"></i> Reasoning Ability</li>
+                        <li><i class="fas fa-caret-right"></i> English Language</li>
+                        <li><i class="fas fa-caret-right"></i> General Knowledge</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Show placeholder categories if no data exists -->
+            <div class="category-card">
+                <div class="category-header">
+                    <h3>SSC Exams</h3>
+                </div>
+                <div class="category-content">
+                    <ul>
+                        <li><i class="fas fa-caret-right"></i> Quantitative Aptitude</li>
+                        <li><i class="fas fa-caret-right"></i> Reasoning Ability</li>
+                        <li><i class="fas fa-caret-right"></i> English Language</li>
+                        <li><i class="fas fa-caret-right"></i> General Knowledge</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="category-card">
+                <div class="category-header">
+                    <h3>Banking Exams</h3>
+                </div>
+                <div class="category-content">
+                    <ul>
+                        <li><i class="fas fa-caret-right"></i> Quantitative Aptitude</li>
+                        <li><i class="fas fa-caret-right"></i> Reasoning Ability</li>
+                        <li><i class="fas fa-caret-right"></i> English Language</li>
+                        <li><i class="fas fa-caret-right"></i> Banking Awareness</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="category-card">
+                <div class="category-header">
+                    <h3>Teaching Exams</h3>
+                </div>
+                <div class="category-content">
+                    <ul>
+                        <li><i class="fas fa-caret-right"></i> Child Development</li>
+                        <li><i class="fas fa-caret-right"></i> Teaching Methodology</li>
+                        <li><i class="fas fa-caret-right"></i> Subject Knowledge</li>
+                        <li><i class="fas fa-caret-right"></i> Educational Psychology</li>
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Exams -->
+<section class="upcoming-exams" id="exams">
+    <div class="container">
+        <div class="section-title">
+            <h2>Upcoming Exams</h2>
+            <p>Important government exams with application dates and deadlines</p>
+        </div>
+        <div class="exam-list">
+            {% for exam in upcoming_exams %}
+            <div class="exam-item">
+                <div class="exam-info">
+                    <h4>{{ exam.title }}</h4>
+                    <p>{{ exam.description }}</p>
+                    <div class="exam-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Application Deadline: {{ exam.application_end }}</span>
+                    </div>
+                </div>
+                {% if exam.is_open_for_application %}
+                <a href="{{ exam.apply_link }}" class="apply-btn" target="_blank">Apply Now</a>
+                {% else %}
+                <button class="apply-btn" disabled>Apply Now</button>
+                {% endif %}
+            </div>
+            {% empty %}
+            <!-- Show placeholder exams if no data exists -->
+            <div class="exam-item">
+                <div class="exam-info">
+                    <h4>SSC CGL 2023</h4>
+                    <p>Combined Graduate Level Examination</p>
+                    <div class="exam-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Application Deadline: December 15, 2023</span>
+                    </div>
+                </div>
+                <a href="#" class="apply-btn">Apply Now</a>
+            </div>
+            <div class="exam-item">
+                <div class="exam-info">
+                    <h4>IBPS PO 2023</h4>
+                    <p>Probationary Officer Recruitment</p>
+                    <div class="exam-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Application Deadline: November 30, 2023</span>
+                    </div>
+                </div>
+                <a href="#" class="apply-btn">Apply Now</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Announcements -->
+<section class="announcements" id="announcements">
+    <div class="container">
+        <div class="section-title">
+            <h2>Latest Announcements</h2>
+            <p>Important updates and notifications for government exam aspirants</p>
+        </div>
+        <div class="announcement-list">
+            {% for announcement in announcements %}
+            <div class="announcement-item">
+                <div class="announcement-badge">{{ announcement.get_announcement_type_display }}</div>
+                <div class="announcement-content">
+                    <h4>{{ announcement.title }}</h4>
+                    <p>{{ announcement.content|safe|truncatewords:30 }}</p>
+                    <small>Posted on: {{ announcement.created_at|date:"F j, Y" }}</small>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Show placeholder announcements if no data exists -->
+            <div class="announcement-item">
+                <div class="announcement-badge">New</div>
+                <div class="announcement-content">
+                    <h4>SSC CGL Tier I Admit Card Released</h4>
+                    <p>The Staff Selection Commission has released the admit cards for SSC CGL Tier I examination.</p>
+                    <small>Posted on: October 25, 2023</small>
+                </div>
+            </div>
+            <div class="announcement-item">
+                <div class="announcement-badge">Important</div>
+                <div class="announcement-content">
+                    <h4>IBPS PO Prelims Result Declared</h4>
+                    <p>Institute of Banking Personnel Selection has declared the results for IBPS PO Preliminary examination.</p>
+                    <small>Posted on: October 20, 2023</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Admit Card Section -->
+<section class="admit-card-section" id="admit-card">
+    <div class="container">
+        <div class="section-title">
+            <h2>Admit Card Download</h2>
+            <p>Download your admit cards for various government examinations</p>
+        </div>
+        <div class="admit-card-grid">
+            {% for admit_card in admit_cards %}
+            <div class="admit-card-item">
+                <i class="fas fa-file-pdf"></i>
+                <h4>{{ admit_card.title }}</h4>
+                <p>{{ admit_card.exam.title }}</p>
+                <a href="{{ admit_card.download_link }}" class="download-btn" style="margin-top: 15px;" target="_blank">Download</a>
+            </div>
+            {% empty %}
+            <!-- Show placeholder admit cards if no data exists -->
+            <div class="admit-card-item">
+                <i class="fas fa-file-pdf"></i>
+                <h4>SSC CGL 2023 Admit Card</h4>
+                <p>Tier I Examination</p>
+                <a href="#" class="download-btn" style="margin-top: 15px;">Download</a>
+            </div>
+            <div class="admit-card-item">
+                <i class="fas fa-file-pdf"></i>
+                <h4>IBPS PO 2023 Admit Card</h4>
+                <p>Preliminary Examination</p>
+                <a href="#" class="download-btn" style="margin-top: 15px;">Download</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+<section class="results-section" id="results">
+    <div class="container">
+        <div class="section-title">
+            <h2>Exam Results</h2>
+            <p>Check results for various government examinations</p>
+        </div>
+        <div class="results-grid">
+            {% for result in results %}
+            <div class="result-item">
+                <i class="fas fa-trophy"></i>
+                <h4>{{ result.title }}</h4>
+                <p>{{ result.exam.title }}</p>
+                <a href="{{ result.result_link }}" class="apply-btn" style="margin-top: 15px;" target="_blank">Check Result</a>
+            </div>
+            {% empty %}
+            <!-- Show placeholder results if no data exists -->
+            <div class="result-item">
+                <i class="fas fa-trophy"></i>
+                <h4>SSC CGL 2022 Final Result</h4>
+                <p>Tier I, II, III and IV Combined</p>
+                <a href="#" class="apply-btn" style="margin-top: 15px;">Check Result</a>
+            </div>
+            <div class="result-item">
+                <i class="fas fa-trophy"></i>
+                <h4>IBPS Clerk 2022 Final Result</h4>
+                <p>Prelims and Mains Combined</p>
+                <a href="#" class="apply-btn" style="margin-top: 15px;">Check Result</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
