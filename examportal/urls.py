@@ -39,4 +39,5 @@ urlpatterns = [
     path('about-us/', views.about_us, name='about_us'),
     path('refund-policy/', views.refund_policy, name='refund_policy'),
     path('disclaimer/', views.disclaimer, name='disclaimer'),
+    path('exam/<int:exam_id>/', views.exam_detail, name='exam_detail'),
 ]

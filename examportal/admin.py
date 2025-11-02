@@ -32,10 +32,35 @@ class NoteAdmin(admin.ModelAdmin):
 
 @admin.register(UpcomingExam)
 class UpcomingExamAdmin(admin.ModelAdmin):
-    list_display = ['title', 'exam_category', 'application_start', 'application_end', 'exam_date', 'is_active']
-    list_filter = ['exam_category', 'is_active', 'application_start']
+    list_display = ['title', 'exam_category', 'application_start', 'application_end', 'total_vacancies', 'is_active']
+    list_filter = ['exam_category', 'is_active']
     search_fields = ['title', 'description']
-    date_hierarchy = 'exam_date'
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('title', 'exam_category', 'description', 'is_active')
+        }),
+        ('Important Dates', {
+            'fields': ('application_start', 'application_end', 'exam_date', 'fee_payment_last_date', 'correction_dates')
+        }),
+        ('Vacancy & Age Details', {
+            'fields': ('total_vacancies', 'vacancy_breakdown', 'age_min', 'age_max', 'age_relaxation_details')
+        }),
+        ('Educational Qualifications', {
+            'fields': ('educational_qualification', 'percentage_required', 'eligibility_criteria')
+        }),
+        ('Application Fee Details', {
+            'fields': ('fee_general', 'fee_obc', 'fee_sc_st', 'fee_female', 'fee_refund_policy', 'payment_modes')
+        }),
+        ('Exam Content', {
+            'fields': ('exam_pattern', 'syllabus', 'how_to_apply'),
+            'classes': ('collapse',)
+        }),
+        ('Important Links', {
+            'fields': ('apply_link', 'date_extend_notice', 'information_bulletin', 'official_notification', 'official_website'),
+            'classes': ('collapse',)
+        }),
+    )
 
 @admin.register(Announcement)
 class AnnouncementAdmin(admin.ModelAdmin):
@@ -55,10 +80,6 @@ class ResultAdmin(admin.ModelAdmin):
     list_filter = ['exam', 'is_active', 'result_date']
     search_fields = ['title', 'exam__title']
 
-from django.contrib import admin
-from .models import *
-
-# Add these to your existing admin registrations
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'phone', 'exam_interests', 'created_at']
@@ -93,6 +114,6 @@ class UserStudySessionAdmin(admin.ModelAdmin):
 
 @admin.register(ExamTarget)
 class ExamTargetAdmin(admin.ModelAdmin):
-    list_display = ['user', 'exam', 'target_date', 'daily_study_goal']
+    list_display = ['user', 'exam', 'target_date', 'daily_study_goal', 'created_at']
     list_filter = ['user', 'exam']
     search_fields = ['user__username', 'exam__title']

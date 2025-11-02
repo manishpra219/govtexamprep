@@ -2,6 +2,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from django.utils import timezone
 from django.utils.text import slugify
+from django.contrib.auth.models import User  # Move this import to the top
 
 class ExamCategory(models.Model):
     name = models.CharField(max_length=100)
@@ -20,22 +21,6 @@ class ExamCategory(models.Model):
     
     class Meta:
         verbose_name_plural = "Exam Categories"
-
-# class ExamCategory(models.Model):
-#     name = models.CharField(max_length=100)
-#     description = models.TextField(blank=True)
-#     icon = models.CharField(max_length=50, default='fas fa-book')
-#     created_at = models.DateTimeField(auto_now_add=True)
-    
-#     def __str__(self):
-#         return self.name
-    
-#     class Meta:
-#         verbose_name_plural = "Exam Categories"
-from django.contrib.auth.models import User
-from django.db import models
-
-# Add these models at the end of your existing models
 
 class UserProfile(models.Model):
     EXAM_CHOICES = [
@@ -59,7 +44,7 @@ class UserProfile(models.Model):
 
 class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    activity_type = models.CharField(max_length=50)  # login, download, view_notes, etc.
+    activity_type = models.CharField(max_length=50)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -88,30 +73,73 @@ class Note(models.Model):
         return self.title
 
 class UpcomingExam(models.Model):
+    # Basic Information (Required)
     title = models.CharField(max_length=200)
     exam_category = models.ForeignKey(ExamCategory, on_delete=models.CASCADE)
     description = models.TextField()
+    
+    # Dates (Required)
     application_start = models.DateField()
     application_end = models.DateField()
-    # exam_date = models.DateField()
     exam_date = models.DateField(null=True, blank=True)
     
-    apply_link = models.URLField(blank=True)
+    # Important Links (Optional)
+    apply_link = models.URLField(blank=True, help_text="Apply Online Link")
+    date_extend_notice = models.URLField(blank=True, help_text="Date Extend Notice Link")
+    information_bulletin = models.URLField(blank=True, help_text="Download Information Bulletin")
+    official_notification = models.URLField(blank=True, help_text="Official Notification PDF")
+    official_website = models.URLField(blank=True, help_text="Official Website Link")
+    
+    # Exam Details (Optional)
+    eligibility_criteria = models.TextField(blank=True, help_text="Educational qualification, age limit, etc.")
+    exam_pattern = models.TextField(blank=True, help_text="Exam stages, marks distribution, etc.")
+    syllabus = models.TextField(blank=True, help_text="Topics and subjects covered")
+    vacancy_details = models.TextField(blank=True, help_text="Number of posts, categories, etc.")
+    application_fee = models.CharField(max_length=200, blank=True, help_text="General/OBC/SC/ST fees")
+    
+    # New Detailed Fields
+    total_vacancies = models.IntegerField(default=0, help_text="Total number of vacancies")
+    age_min = models.IntegerField(null=True, blank=True, help_text="Minimum age requirement")
+    age_max = models.IntegerField(null=True, blank=True, help_text="Maximum age requirement")
+    age_relaxation_details = models.TextField(blank=True, help_text="Age relaxation rules")
+    
+    # Application fee details
+    fee_general = models.CharField(max_length=200, blank=True, help_text="Fee for General category")
+    fee_obc = models.CharField(max_length=200, blank=True, help_text="Fee for OBC category")
+    fee_sc_st = models.CharField(max_length=200, blank=True, help_text="Fee for SC/ST category")
+    fee_female = models.CharField(max_length=200, blank=True, help_text="Fee for Female candidates")
+    fee_refund_policy = models.TextField(blank=True, help_text="Fee refund policy details")
+    payment_modes = models.TextField(blank=True, help_text="Accepted payment modes")
+    
+    # Important dates
+    fee_payment_last_date = models.DateField(null=True, blank=True, help_text="Last date for fee payment")
+    correction_dates = models.CharField(max_length=200, blank=True, help_text="Correction window dates")
+    
+    # Vacancy breakdown
+    vacancy_breakdown = models.TextField(blank=True, help_text="JSON or formatted text for category-wise vacancies")
+    
+    # Educational qualifications
+    educational_qualification = models.TextField(blank=True, help_text="Required educational qualifications")
+    percentage_required = models.TextField(blank=True, help_text="Percentage requirements for different categories")
+    
+    # How to apply
+    how_to_apply = models.TextField(blank=True, help_text="Step-by-step application process")
+    
+    # Status
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
     def get_exam_date_display(self):
-        """Smart display for exam date"""
         if self.exam_date:
             return self.exam_date.strftime("%d %b %Y")
         return "Coming Soon"
     
-    
-    def __str__(self):
-        return self.title
-    
     def is_open_for_application(self):
         today = timezone.now().date()
         return self.application_start <= today <= self.application_end
+    
+    def __str__(self):
+        return self.title
 
 class Announcement(models.Model):
     ANNOUNCEMENT_TYPES = [
@@ -138,7 +166,6 @@ class AdmitCard(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
-    
     def __str__(self):
         return f"{self.exam.title} - {self.title}"
 
@@ -160,7 +187,6 @@ class Contact(models.Model):
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     
-    
     def __str__(self):
         return f"{self.name} - {self.subject}"
     
@@ -180,7 +206,6 @@ class AnswerKey(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
-    
     def __str__(self):
         return f"{self.exam.title} - {self.title}"
     
@@ -188,8 +213,6 @@ class AnswerKey(models.Model):
         if self.answer_key_file:
             return self.answer_key_file.url
         return self.answer_key_link
-    
-# Add these progress tracking models to your existing models.py
 
 class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -233,8 +256,7 @@ class ExamTarget(models.Model):
     exam = models.ForeignKey(UpcomingExam, on_delete=models.CASCADE)
     target_date = models.DateField()
     daily_study_goal = models.IntegerField(default=120)  # minutes
-    # created_at = models.DateTimeField(auto_now_add=True)
-    created_at = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"{self.user.username} - {self.exam.title}"

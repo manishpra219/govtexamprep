@@ -611,3 +611,12 @@ def contact_view(request):
             form = ContactForm()
     
     return render(request, 'examportal/contact.html', {'form': form})
+
+def exam_detail(request, exam_id):
+    """View for individual exam detail page"""
+    exam = get_object_or_404(UpcomingExam, id=exam_id, is_active=True)
+    
+    context = {
+        'exam': exam,
+    }
+    return render(request, 'examportal/exam_detail.html', context)

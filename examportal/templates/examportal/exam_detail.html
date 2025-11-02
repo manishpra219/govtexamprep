@@ -1,0 +1,756 @@
+{% extends 'examportal/base.html' %}
+
+{% block title %}{{ exam.title }} - GovtExamPrep{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #1e3c72;
+        --primary-light: #2a5298;
+        --secondary: #2c3e50;
+        --accent: #3498db;
+        --success: #2ecc71;
+        --warning: #e67e22;
+        --danger: #e74c3c;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --gray: #6c757d;
+        --border: #e9ecef;
+        --shadow: 0 5px 15px rgba(0,0,0,0.08);
+        --radius: 12px;
+        --transition: all 0.3s ease;
+    }
+
+    .exam-detail-section {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    .back-btn {
+        color: var(--accent);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+        font-weight: 500;
+        transition: var(--transition);
+        padding: 10px 20px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: var(--shadow);
+    }
+
+    .back-btn:hover {
+        color: var(--primary);
+        transform: translateX(-5px);
+    }
+
+    .exam-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .exam-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(30deg);
+    }
+
+    .exam-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    .exam-title {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .exam-description {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        max-width: 80%;
+    }
+
+    .exam-status {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        background: var(--success);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .exam-status.closed {
+        background: var(--danger);
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    .key-dates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .date-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-radius: var(--radius);
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: var(--transition);
+    }
+
+    .date-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    .date-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 8px;
+    }
+
+    .date-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
+
+    @media (max-width: 992px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .exam-status {
+            position: relative;
+            top: auto;
+            right: auto;
+            margin-top: 15px;
+            display: inline-flex;
+        }
+        
+        .exam-description {
+            max-width: 100%;
+        }
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 30px;
+        margin-bottom: 25px;
+        transition: var(--transition);
+        border: 1px solid var(--border);
+    }
+
+    .detail-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--border);
+    }
+
+    .card-icon {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+
+    .card-title {
+        color: var(--primary);
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .data-table th {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+        text-align: left;
+        padding: 18px;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .data-table td {
+        padding: 18px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .data-table tr:nth-child(even) {
+        background-color: #f8fafc;
+    }
+
+    .data-table tr:hover {
+        background-color: #f0f5ff;
+    }
+
+    .post-name {
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .eligibility-criteria {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .total-row {
+        background: linear-gradient(135deg, #e8efff, #d9e6ff) !important;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .action-card {
+        text-align: center;
+        padding: 30px;
+    }
+
+    .apply-btn {
+        background: linear-gradient(135deg, var(--success), #27ae60);
+        color: white;
+        padding: 18px 30px;
+        border-radius: var(--radius);
+        text-decoration: none;
+        font-weight: 600;
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        border: none;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .apply-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    .apply-btn.closed {
+        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+
+    .fee-grid {
+        display: grid;
+        gap: 12px;
+    }
+
+    .fee-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed var(--border);
+    }
+
+    .fee-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .quick-links-grid {
+        display: grid;
+        gap: 12px;
+    }
+
+    .quick-link {
+        color: var(--accent);
+        text-decoration: none;
+        padding: 15px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: var(--transition);
+        background: white;
+    }
+
+    .quick-link:hover {
+        background: #f0f7ff;
+        border-color: var(--accent);
+        transform: translateX(5px);
+    }
+
+    .important-notes-card {
+        background: linear-gradient(135deg, #fff8e6, #fff0cc);
+        border-left: 4px solid var(--warning);
+        padding: 25px;
+        border-radius: var(--radius);
+        margin-top: 20px;
+    }
+
+    .notes-title {
+        color: var(--warning);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.2rem;
+    }
+
+    .notes-list {
+        padding-left: 20px;
+    }
+
+    .notes-list li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 15px 0;
+    }
+
+    .info-item {
+        background: var(--light);
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+        margin: 25px 0;
+        border: none;
+    }
+
+    .footer-note {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: var(--gray);
+        font-size: 0.9rem;
+        border-top: 1px solid var(--border);
+    }
+
+    /* Animation for page load */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .detail-card, .action-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .detail-card:nth-child(2) { animation-delay: 0.1s; }
+    .detail-card:nth-child(3) { animation-delay: 0.2s; }
+    .action-card:nth-child(2) { animation-delay: 0.15s; }
+    .action-card:nth-child(3) { animation-delay: 0.25s; }
+</style>
+
+<section class="exam-detail-section">
+    <div class="container">
+        <!-- Back Button -->
+        <a href="{% url 'upcoming_exams' %}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Exams
+        </a>
+
+        <!-- Exam Header -->
+        <div class="exam-header">
+            <span class="exam-badge">{{ exam.exam_category.name }}</span>
+            <h1 class="exam-title">{{ exam.title }}</h1>
+            <p class="exam-description">{{ exam.description }}</p>
+            
+            <div class="exam-status {% if not exam.is_open_for_application %}closed{% endif %}">
+                <i class="fas {% if exam.is_open_for_application %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                {% if exam.is_open_for_application %}Open for Application{% else %}Application Closed{% endif %}
+            </div>
+
+            <!-- Key Dates -->
+            <div class="key-dates-grid">
+                <div class="date-card">
+                    <div class="date-label">Application Starts</div>
+                    <div class="date-value">
+                        <i class="far fa-calendar-alt"></i> {{ exam.application_start|date:"F d, Y" }}
+                    </div>
+                </div>
+                <div class="date-card">
+                    <div class="date-label">Application Ends</div>
+                    <div class="date-value">
+                        <i class="far fa-calendar-alt"></i> {{ exam.application_end|date:"F d, Y" }}
+                    </div>
+                </div>
+                <div class="date-card">
+                    <div class="date-label">Exam Date</div>
+                    <div class="date-value">
+                        <i class="far fa-calendar-check"></i> {{ exam.get_exam_date_display }}
+                    </div>
+                </div>
+                {% if exam.fee_payment_last_date %}
+                <div class="date-card">
+                    <div class="date-label">Fee Payment Last Date</div>
+                    <div class="date-value">
+                        <i class="far fa-calendar-alt"></i> {{ exam.fee_payment_last_date|date:"F d, Y" }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Left Column - Exam Details -->
+            <div class="exam-details">
+                <!-- Vacancy Details -->
+                {% if exam.total_vacancies > 0 %}
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h2 class="card-title">Vacancy Details</h2>
+                    </div>
+                    <div style="color: #666; line-height: 1.8;">
+                        <div class="info-item" style="background: #e8f5e8; color: #2d5016; font-weight: 600; font-size: 1.1rem;">
+                            <strong>Total Vacancies:</strong> {{ exam.total_vacancies }} Posts
+                        </div>
+                        {% if exam.vacancy_breakdown %}
+                            <div style="margin-top: 20px;">
+                                {{ exam.vacancy_breakdown|linebreaks }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Eligibility Criteria -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h2 class="card-title">Eligibility Criteria</h2>
+                    </div>
+                    <div style="color: #666; line-height: 1.8;">
+                        <!-- Age Limit -->
+                        <div style="margin-bottom: 25px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">Age Limit</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>Minimum Age:</strong> {{ exam.age_min }} Years
+                                </div>
+                                <div class="info-item">
+                                    <strong>Maximum Age:</strong> {{ exam.age_max }} Years
+                                </div>
+                            </div>
+                            {% if exam.age_relaxation_details %}
+                            <div style="margin-top: 15px; padding: 12px; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
+                                <strong>Age Relaxation:</strong> {{ exam.age_relaxation_details }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <hr class="section-divider">
+
+                        <!-- Educational Qualification -->
+                        {% if exam.educational_qualification %}
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">Educational Qualification</h3>
+                            {{ exam.educational_qualification|linebreaks }}
+                        </div>
+                        {% endif %}
+
+                        <!-- Percentage Requirements -->
+                        {% if exam.percentage_required %}
+                        <div>
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">Percentage Requirements</h3>
+                            {{ exam.percentage_required|linebreaks }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- How to Apply -->
+                {% if exam.how_to_apply %}
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h2 class="card-title">How to Apply</h2>
+                    </div>
+                    <div style="color: #666; line-height: 1.8;">
+                        {{ exam.how_to_apply|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Exam Pattern -->
+                {% if exam.exam_pattern %}
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h2 class="card-title">Exam Pattern</h2>
+                    </div>
+                    <div style="color: #666;">
+                        {{ exam.exam_pattern|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Syllabus -->
+                {% if exam.syllabus %}
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h2 class="card-title">Syllabus</h2>
+                    </div>
+                    <div style="color: #666;">
+                        {{ exam.syllabus|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Column - Quick Actions -->
+            <div class="exam-actions">
+                <!-- Apply Button -->
+                <div class="detail-card action-card">
+                    {% if exam.is_open_for_application and exam.apply_link %}
+                    <a href="{{ exam.apply_link }}" target="_blank" class="apply-btn">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </a>
+                    {% else %}
+                    <button class="apply-btn closed" disabled>
+                        <i class="fas fa-times-circle"></i> Application Closed
+                    </button>
+                    {% endif %}
+                    <p style="color: var(--gray); font-size: 14px; margin: 0;">
+                        {% if exam.is_open_for_application %}
+                        Apply before {{ exam.application_end|date:"M d, Y" }}
+                        {% else %}
+                        Application period has ended
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Application Fee -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3 class="card-title">Application Fee</h3>
+                    </div>
+                    <div class="fee-grid">
+                        {% if exam.fee_general %}
+                        <div class="fee-item">
+                            <span>General / OBC / EWS:</span>
+                            <strong>{{ exam.fee_general }}</strong>
+                        </div>
+                        {% endif %}
+                        {% if exam.fee_sc_st %}
+                        <div class="fee-item">
+                            <span>SC / ST:</span>
+                            <strong>{{ exam.fee_sc_st }}</strong>
+                        </div>
+                        {% endif %}
+                        {% if exam.fee_female %}
+                        <div class="fee-item">
+                            <span>All Category Female:</span>
+                            <strong>{{ exam.fee_female }}</strong>
+                        </div>
+                        {% endif %}
+                        {% if exam.fee_refund_policy %}
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                            <small><strong>Refund Policy:</strong> {{ exam.fee_refund_policy }}</small>
+                        </div>
+                        {% endif %}
+                        {% if exam.payment_modes %}
+                        <div style="margin-top: 10px;">
+                            <small><strong>Payment Modes:</strong> {{ exam.payment_modes }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3 class="card-title">Quick Links</h3>
+                    </div>
+                    <div class="quick-links-grid">
+                        {% if exam.official_notification %}
+                        <a href="{{ exam.official_notification }}" target="_blank" class="quick-link">
+                            <i class="fas fa-file-alt"></i> Official Notification
+                        </a>
+                        {% endif %}
+                        
+                        {% if exam.information_bulletin %}
+                        <a href="{{ exam.information_bulletin }}" target="_blank" class="quick-link">
+                            <i class="fas fa-book"></i> Information Bulletin
+                        </a>
+                        {% endif %}
+                        
+                        {% if exam.date_extend_notice %}
+                        <a href="{{ exam.date_extend_notice }}" target="_blank" class="quick-link">
+                            <i class="fas fa-calendar-plus"></i> Date Extension Notice
+                        </a>
+                        {% endif %}
+                        
+                        {% if exam.official_website %}
+                        <a href="{{ exam.official_website }}" target="_blank" class="quick-link">
+                            <i class="fas fa-globe"></i> Official Website
+                        </a>
+                        {% endif %}
+
+                        <a href="{% url 'notes' %}?exam={{ exam.id }}" class="quick-link">
+                            <i class="fas fa-book"></i> Study Materials
+                        </a>
+                        <a href="{% url 'answer_keys' %}?exam={{ exam.id }}" class="quick-link">
+                            <i class="fas fa-key"></i> Answer Keys
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Important Notes -->
+                <div class="important-notes-card">
+                    <h3 class="notes-title">
+                        <i class="fas fa-exclamation-triangle"></i> Important Notes
+                    </h3>
+                    <ul class="notes-list">
+                        <li>Keep all required documents ready before applying</li>
+                        <li>Verify all details from the official website</li>
+                        <li>Check admit card release dates regularly</li>
+                        <li>Read the official notification carefully</li>
+                        {% if exam.correction_dates %}
+                        <li><strong>Correction window:</strong> {{ exam.correction_dates }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <p>For detailed information and official notification, please visit the official website</p>
+            <p>© 2025 GovtExamPrep. All Rights Reserved.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Add smooth animations and interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.detail-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click animation to quick links
+        const quickLinks = document.querySelectorAll('.quick-link');
+        quickLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Add loading animation to apply button
+        const applyBtn = document.querySelector('.apply-btn:not(.closed)');
+        if (applyBtn) {
+            applyBtn.addEventListener('click', function(e) {
+                if (!this.classList.contains('closed')) {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting...';
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-paper-plane"></i> Apply Now';
+                    }, 2000);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

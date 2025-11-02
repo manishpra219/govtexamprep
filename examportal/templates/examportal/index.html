@@ -18,9 +18,9 @@
 
         <!-- Sub-headline -->
         <p class="sub-headline">
-            Get <strong>free study materials, live classes, mock tests,</strong> and 
+            Get <strong>free study materials, live classes, </strong> and 
             <strong>personalized guidance</strong> for SSC, Banking, Teaching, 
-            UPSC and 50+ other government exams.
+            Railway and 50+ other government exams.
         </p>
 
         <!-- Key Benefits Grid -->
@@ -63,10 +63,11 @@
     </div>
     <div class="search-tags">
         <span>Popular: </span>
-        <a href="{% url 'search' %}?q=SSC CHSL">SSC CHSL</a>
-        <a href="{% url 'search' %}?q=IBPS PO">IBPS PO</a>
-        <a href="{% url 'search' %}?q=CTET">CTET</a>
-        <a href="{% url 'search' %}?q=UPSC Prelims">Railway Exam</a>
+        <a href="{% url 'search' %}?q=SSC">SSC </a>
+        <a href="{% url 'search' %}?q=BANKING">BANKING </a>
+        <a href="{% url 'search' %}?q=TEACHING">TEACHING </a>
+        <a href="{% url 'search' %}?q=RAILWAY">RAILWAY </a>
+        <a href="{% url 'search' %}?q=STATE EXAMS">STATE EXAMS</a>
     </div>
 </div>
 
@@ -83,10 +84,10 @@
                     Start Free Preparation
                 </a>
             {% endif %}
-            <a href="#" class="cta-btn btn-secondary">
+            <!-- <a href="#" class="cta-btn btn-secondary">
                 <span class="btn-icon">📱</span>
                 Download App
-            </a>
+            </a> -->
         </div>
 
         <!-- Social Proof -->
@@ -148,7 +149,7 @@
 </section>
 
 <!-- Exam Categories -->
-<section class="exam-categories">
+ <!-- <section class="exam-categories">
     <div class="container">
         <div class="section-title">
             <h2>Popular Exam Categories</h2>
@@ -174,7 +175,7 @@
                 </div>
             </div>
             {% empty %}
-            <!-- Show placeholder categories if no data exists -->
+            
             <div class="category-card">
                 <div class="category-header">
                     <h3>SSC Exams</h3>
@@ -217,13 +218,14 @@
             {% endfor %}
         </div>
     </div>
-</section>
+</section>  -->
 
 <!-- Upcoming Exams -->
 <section class="upcoming-exams" id="exams">
     <div class="container">
         <div class="section-title">
             <h2>Upcoming Exams</h2>
+            
             <p>Important government exams with application dates and deadlines</p>
         </div>
         <div class="exam-list">

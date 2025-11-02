@@ -70,10 +70,16 @@
                                 Apply Now
                             </a>
                             {% endif %}
-                            <button style="background: #95a5a6; color: white; padding: 10px 25px; border-radius: 5px; 
+                            <!-- <button style="background: #95a5a6; color: white; padding: 10px 25px; border-radius: 5px; 
                                          border: none; font-weight: 600; cursor: pointer;">
                                 View Details
-                            </button>
+                            </button> -->
+                            <!-- REPLACE this button -->
+<a href="{% url 'exam_detail' exam.id %}" 
+   style="background: #9b59b6; color: white; padding: 10px 25px; border-radius: 5px; 
+          text-decoration: none; font-weight: 600; display: inline-block;">
+    View Details
+</a>
                         </div>
                     </div>
                     {% endfor %}

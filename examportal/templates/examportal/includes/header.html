@@ -7,7 +7,7 @@
             </div>
 
             <!-- Header Search Box -->
-            <div class="header-search" style="flex: 1; max-width: 400px; margin: 0 30px;">
+            <!-- <div class="header-search" style="flex: 1; max-width: 400px; margin: 0 30px;">
                 <form method="get" action="{% url 'search' %}" style="display: flex; width: 100%;">
                     <input type="text" name="q" value="{{ request.GET.q }}" 
                            placeholder="Search notes, exams, answer keys..." 
@@ -19,52 +19,35 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
-            </div>
+            </div> -->
 
             <nav>
-                <ul>
-                    <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
-                        <i class="fas fa-home"></i> Home
-                    </a></li>
-                    <li><a href="{% url 'notes' %}" class="{% if 'notes' in request.path %}active{% endif %}">
-                        <i class="fas fa-book"></i> Notes
-                    </a></li>
-                    <li><a href="{% url 'upcoming_exams' %}" class="{% if 'upcoming-exams' in request.path %}active{% endif %}">
-                        <i class="fas fa-calendar-alt"></i> Exams
-                    </a></li>
-                    <li><a href="{% url 'announcements' %}" class="{% if 'announcements' in request.path %}active{% endif %}">
-                        <i class="fas fa-bullhorn"></i> News
-                    </a></li>
-                    
-                    <!-- Improved Downloads Dropdown -->
-                    <li class="dropdown" style="position: relative;" id="downloadsDropdown">
-                        <a href="#" class="{% if 'answer-keys' in request.path or 'admit-cards' in request.path or 'results' in request.path %}active{% endif %}"
-                           onclick="toggleDropdown('downloadsDropdown')">
-                            <i class="fas fa-download"></i> Downloads <i class="fas fa-caret-down"></i>
-                        </a>
-                        <div class="dropdown-menu" id="downloadsMenu" 
-                             style="position: absolute; top: 100%; left: 0; background: white; min-width: 200px; 
-                                    border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); padding: 10px 0; 
-                                    margin-top: 10px; display: none; z-index: 1000;">
-                            <a href="{% url 'answer_keys' %}" 
-                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
-                                      transition: background 0.3s; border-bottom: 1px solid #f0f0f0;">
-                                <i class="fas fa-key"></i> Answer Keys
-                            </a>
-                            <a href="{% url 'admit_cards' %}" 
-                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
-                                      transition: background 0.3s; border-bottom: 1px solid #f0f0f0;">
-                                <i class="fas fa-file-pdf"></i> Admit Cards
-                            </a>
-                            <a href="{% url 'results' %}" 
-                               style="display: block; padding: 10px 20px; color: #333; text-decoration: none; 
-                                      transition: background 0.3s;">
-                                <i class="fas fa-trophy"></i> Results
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
+    <ul>
+        <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
+            <i class="fas fa-home"></i> Home
+        </a></li>
+        <li><a href="{% url 'notes' %}" class="{% if 'notes' in request.path %}active{% endif %}">
+            <i class="fas fa-book"></i> Notes
+        </a></li>
+        <li><a href="{% url 'upcoming_exams' %}" class="{% if 'upcoming-exams' in request.path %}active{% endif %}">
+            <i class="fas fa-calendar-alt"></i> Latest Exams
+        </a></li>
+        <li><a href="{% url 'announcements' %}" class="{% if 'announcements' in request.path %}active{% endif %}">
+            <i class="fas fa-bullhorn"></i> Announcements
+        </a></li>
+        
+        <!-- Moved Downloads items to main navigation -->
+        <li><a href="{% url 'answer_keys' %}" class="{% if 'answer-keys' in request.path %}active{% endif %}">
+            <i class="fas fa-key"></i> Answer Keys
+        </a></li>
+        <li><a href="{% url 'admit_cards' %}" class="{% if 'admit-cards' in request.path %}active{% endif %}">
+            <i class="fas fa-file-pdf"></i> Admit Cards
+        </a></li>
+        <li><a href="{% url 'results' %}" class="{% if 'results' in request.path %}active{% endif %}">
+            <i class="fas fa-trophy"></i> Results
+        </a></li>
+    </ul>
+</nav>
 
             <div class="auth-buttons">
                 {% if user.is_authenticated %}
